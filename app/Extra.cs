@@ -59,6 +59,7 @@ namespace GHelper
               {"monitors", "Open Connected Monitors & DDC Control"},
               {"monitor_bright_up", "External Monitor: Brightness +10%"},
               {"monitor_bright_down", "External Monitor: Brightness -10%"},
+              {"audio_studio", "Open Audio Codecs & Spatial Sound"},
               {"custom", Properties.Strings.Custom}
             };
 
@@ -522,6 +523,15 @@ namespace GHelper
             buttonOpenMonitors.Secondary = true;
             buttonOpenMonitors.Click += (s, e) => Program.settingsForm.OpenMonitorsControl();
             panelSettings.Controls.Add(buttonOpenMonitors);
+
+            RButton buttonOpenAudio = new RButton();
+            buttonOpenAudio.Text = "Open Audio Codecs & Spatial Sound (Dolby/DTS/2.0)";
+            buttonOpenAudio.Dock = DockStyle.Top;
+            buttonOpenAudio.Height = 38;
+            buttonOpenAudio.Margin = new Padding(3, 4, 3, 4);
+            buttonOpenAudio.Secondary = true;
+            buttonOpenAudio.Click += (s, e) => Program.settingsForm.OpenAudioStudio();
+            panelSettings.Controls.Add(buttonOpenAudio);
 
             sliderBrightness.Value = InputDispatcher.GetBacklight();
             sliderBrightness.AccessibleName = Properties.Strings.LaptopBacklight + ": " + sliderBrightness.Value;

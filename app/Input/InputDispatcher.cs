@@ -749,6 +749,9 @@ namespace GHelper.Input
                 case "monitor_bright_down":
                     DdcMonitorManager.AdjustAllBrightness(-10);
                     break;
+                case "audio_studio":
+                    Program.settingsForm.BeginInvoke(Program.settingsForm.OpenAudioStudio);
+                    break;
                 default:
                     break;
             }

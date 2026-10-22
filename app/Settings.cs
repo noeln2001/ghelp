@@ -1,5 +1,6 @@
 using GHelper.Ally;
 using GHelper.AnimeMatrix;
+using GHelper.SpatialAudio;
 using GHelper.AutoUpdate;
 using GHelper.Battery;
 using GHelper.Diagnostics;
@@ -35,6 +36,7 @@ namespace GHelper
         private GameProfilesForm? _gameProfilesForm;
         private HardwareDiagnosticsForm? _diagnosticsForm;
         private MonitorControlForm? _monitorControlForm;
+        private AudioStudioForm? _audioStudioForm;
 
         public GPUModeControl gpuControl;
         public AllyControl allyControl;
@@ -360,6 +362,14 @@ namespace GHelper
             _monitorControlForm.BringToFront();
         }
 
+        public void OpenAudioStudio()
+        {
+            if (_audioStudioForm == null || _audioStudioForm.IsDisposed)
+                _audioStudioForm = new AudioStudioForm();
+            _audioStudioForm.Show();
+            _audioStudioForm.BringToFront();
+        }
+
         private void InitUltimateHub()
         {
             try
@@ -395,15 +405,16 @@ namespace GHelper
                 {
                     Dock = DockStyle.Top,
                     Height = 44,
-                    ColumnCount = 5,
+                    ColumnCount = 6,
                     RowCount = 1,
                     Margin = new Padding(0, 4, 0, 4)
                 };
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.70F));
 
                 RButton btnRGB = new RButton
                 {
@@ -429,6 +440,18 @@ namespace GHelper
                 };
                 btnMonitors.Click += (_, _) => OpenMonitorsControl();
 
+                RButton btnAudio = new RButton
+                {
+                    Text = "Audio",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnAudio.Click += (_, _) => OpenAudioStudio();
+
                 RButton btnPerf = new RButton
                 {
                     Text = "Telemetry",
@@ -443,7 +466,7 @@ namespace GHelper
 
                 RButton btnGames = new RButton
                 {
-                    Text = "Game Profiles",
+                    Text = "Profiles",
                     Dock = DockStyle.Fill,
                     Margin = new Padding(2),
                     BorderRadius = 4,
@@ -467,9 +490,10 @@ namespace GHelper
 
                 tableHub.Controls.Add(btnRGB, 0, 0);
                 tableHub.Controls.Add(btnMonitors, 1, 0);
-                tableHub.Controls.Add(btnPerf, 2, 0);
-                tableHub.Controls.Add(btnGames, 3, 0);
-                tableHub.Controls.Add(btnDiag, 4, 0);
+                tableHub.Controls.Add(btnAudio, 2, 0);
+                tableHub.Controls.Add(btnPerf, 3, 0);
+                tableHub.Controls.Add(btnGames, 4, 0);
+                tableHub.Controls.Add(btnDiag, 5, 0);
 
                 panelUltimateHub.Controls.Add(tableHub);
                 panelUltimateHub.Controls.Add(pnlTitle);
@@ -1120,6 +1144,11 @@ namespace GHelper
             menuMonitors.Click += (s, e) => OpenMonitorsControl();
             menuMonitors.Margin = padding;
             contextMenuStrip.Items.Add(menuMonitors);
+
+            var menuAudio = new ToolStripMenuItem("Audio Codecs & Spatial Sound (Dolby/DTS/2.0)...");
+            menuAudio.Click += (s, e) => OpenAudioStudio();
+            menuAudio.Margin = padding;
+            contextMenuStrip.Items.Add(menuAudio);
 
             var menuPerf = new ToolStripMenuItem("Performance & Benchmarks...");
             menuPerf.Click += (s, e) => OpenPerformanceDashboard();
