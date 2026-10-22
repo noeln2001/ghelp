@@ -34,6 +34,7 @@ namespace GHelper
         private PerformanceDashboardForm? _perfDashboardForm;
         private GameProfilesForm? _gameProfilesForm;
         private HardwareDiagnosticsForm? _diagnosticsForm;
+        private MonitorControlForm? _monitorControlForm;
 
         public GPUModeControl gpuControl;
         public AllyControl allyControl;
@@ -100,6 +101,8 @@ namespace GHelper
             labelPerf.Text = Properties.Strings.PerformanceMode;
             labelGPU.Text = Properties.Strings.GPUMode;
             labelSreen.Text = Properties.Strings.LaptopScreen;
+            labelSreen.Cursor = Cursors.Hand;
+            labelSreen.Click += (_, _) => OpenMonitorsControl();
             UpdateKeyboardLabel();
             labelMatrix.Text = Properties.Strings.AnimeMatrix;
             labelRearLight.Text = Properties.Strings.RearLight;
@@ -349,6 +352,14 @@ namespace GHelper
             _diagnosticsForm.BringToFront();
         }
 
+        public void OpenMonitorsControl()
+        {
+            if (_monitorControlForm == null || _monitorControlForm.IsDisposed)
+                _monitorControlForm = new MonitorControlForm();
+            _monitorControlForm.Show();
+            _monitorControlForm.BringToFront();
+        }
+
         private void InitUltimateHub()
         {
             try
@@ -384,14 +395,15 @@ namespace GHelper
                 {
                     Dock = DockStyle.Top,
                     Height = 44,
-                    ColumnCount = 4,
+                    ColumnCount = 5,
                     RowCount = 1,
                     Margin = new Padding(0, 4, 0, 4)
                 };
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 20F));
 
                 RButton btnRGB = new RButton
                 {
@@ -404,6 +416,18 @@ namespace GHelper
                     Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
                 };
                 btnRGB.Click += (_, _) => OpenRGBStudio();
+
+                RButton btnMonitors = new RButton
+                {
+                    Text = "Monitors",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnMonitors.Click += (_, _) => OpenMonitorsControl();
 
                 RButton btnPerf = new RButton
                 {
@@ -442,9 +466,10 @@ namespace GHelper
                 btnDiag.Click += (_, _) => OpenDiagnostics();
 
                 tableHub.Controls.Add(btnRGB, 0, 0);
-                tableHub.Controls.Add(btnPerf, 1, 0);
-                tableHub.Controls.Add(btnGames, 2, 0);
-                tableHub.Controls.Add(btnDiag, 3, 0);
+                tableHub.Controls.Add(btnMonitors, 1, 0);
+                tableHub.Controls.Add(btnPerf, 2, 0);
+                tableHub.Controls.Add(btnGames, 3, 0);
+                tableHub.Controls.Add(btnDiag, 4, 0);
 
                 panelUltimateHub.Controls.Add(tableHub);
                 panelUltimateHub.Controls.Add(pnlTitle);
@@ -1090,6 +1115,11 @@ namespace GHelper
             menuRgb.Click += (s, e) => OpenRGBStudio();
             menuRgb.Margin = padding;
             contextMenuStrip.Items.Add(menuRgb);
+
+            var menuMonitors = new ToolStripMenuItem("Connected Monitors & DDC/CI...");
+            menuMonitors.Click += (s, e) => OpenMonitorsControl();
+            menuMonitors.Margin = padding;
+            contextMenuStrip.Items.Add(menuMonitors);
 
             var menuPerf = new ToolStripMenuItem("Performance & Benchmarks...");
             menuPerf.Click += (s, e) => OpenPerformanceDashboard();

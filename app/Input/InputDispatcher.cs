@@ -323,6 +323,10 @@ namespace GHelper.Input
                     Program.toast.RunToast(ScreenBrightness.Adjust(up ? step : -step) + "%", up ? ToastIcon.BrightnessUp : ToastIcon.BrightnessDown);
             }
 
+            if (AppConfig.Is("sync_external_brightness"))
+            {
+                DdcMonitorManager.AdjustAllBrightness(up ? step : -step);
+            }
         }
 
         static void SetBrightnessDimming(int delta)
@@ -735,6 +739,15 @@ namespace GHelper.Input
                     break;
                 case "game_boost":
                     GameBooster.RunBoost();
+                    break;
+                case "monitors":
+                    Program.settingsForm.BeginInvoke(Program.settingsForm.OpenMonitorsControl);
+                    break;
+                case "monitor_bright_up":
+                    DdcMonitorManager.AdjustAllBrightness(10);
+                    break;
+                case "monitor_bright_down":
+                    DdcMonitorManager.AdjustAllBrightness(-10);
                     break;
                 default:
                     break;

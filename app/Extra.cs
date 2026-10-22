@@ -56,6 +56,9 @@ namespace GHelper
               {"kill_app", "Kill Foreground App"},
               {"battery_report", "Open Battery Report"},
               {"game_boost", "Boost RAM & Clear Temp"},
+              {"monitors", "Open Connected Monitors & DDC Control"},
+              {"monitor_bright_up", "External Monitor: Brightness +10%"},
+              {"monitor_bright_down", "External Monitor: Brightness -10%"},
               {"custom", Properties.Strings.Custom}
             };
 
@@ -510,6 +513,15 @@ namespace GHelper
             buttonOpenDiag.Secondary = true;
             buttonOpenDiag.Click += (s, e) => Program.settingsForm.OpenDiagnostics();
             panelSettings.Controls.Add(buttonOpenDiag);
+
+            RButton buttonOpenMonitors = new RButton();
+            buttonOpenMonitors.Text = "Open Connected Monitors & DDC/CI Control";
+            buttonOpenMonitors.Dock = DockStyle.Top;
+            buttonOpenMonitors.Height = 38;
+            buttonOpenMonitors.Margin = new Padding(3, 4, 3, 4);
+            buttonOpenMonitors.Secondary = true;
+            buttonOpenMonitors.Click += (s, e) => Program.settingsForm.OpenMonitorsControl();
+            panelSettings.Controls.Add(buttonOpenMonitors);
 
             sliderBrightness.Value = InputDispatcher.GetBacklight();
             sliderBrightness.AccessibleName = Properties.Strings.LaptopBacklight + ": " + sliderBrightness.Value;
