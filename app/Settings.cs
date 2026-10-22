@@ -1,18 +1,22 @@
-﻿using GHelper.Ally;
+using GHelper.Ally;
 using GHelper.AnimeMatrix;
 using GHelper.AutoUpdate;
 using GHelper.Battery;
+using GHelper.Diagnostics;
 using GHelper.Display;
 using GHelper.Fan;
+using GHelper.Games;
 using GHelper.Gpu;
 using GHelper.Helpers;
 using GHelper.Input;
 using GHelper.Mode;
+using GHelper.Performance;
 using GHelper.Peripherals;
 using GHelper.Peripherals.Headset;
 using GHelper.Peripherals.Keyboard;
 using GHelper.Peripherals.Mouse;
 using GHelper.Properties;
+using GHelper.RGBStudio;
 using GHelper.UI;
 using GHelper.USB;
 using System.Diagnostics;
@@ -25,6 +29,11 @@ namespace GHelper
         ContextMenuStrip contextMenuStrip = new CustomContextMenu();
         ToolStripMenuItem menuEco, menuStandard, menuUltimate, menuOptimized;
         DonateControl donateControl;
+
+        private RGBStudioForm? _rgbStudioForm;
+        private PerformanceDashboardForm? _perfDashboardForm;
+        private GameProfilesForm? _gameProfilesForm;
+        private HardwareDiagnosticsForm? _diagnosticsForm;
 
         public GPUModeControl gpuControl;
         public AllyControl allyControl;
@@ -305,6 +314,148 @@ namespace GHelper
 
             panelPerformance.Focus();
             InitVisual();
+            InitUltimateHub();
+        }
+
+        public void OpenRGBStudio()
+        {
+            if (_rgbStudioForm == null || _rgbStudioForm.IsDisposed)
+                _rgbStudioForm = new RGBStudioForm();
+            _rgbStudioForm.Show();
+            _rgbStudioForm.BringToFront();
+        }
+
+        public void OpenPerformanceDashboard()
+        {
+            if (_perfDashboardForm == null || _perfDashboardForm.IsDisposed)
+                _perfDashboardForm = new PerformanceDashboardForm();
+            _perfDashboardForm.Show();
+            _perfDashboardForm.BringToFront();
+        }
+
+        public void OpenGameProfiles()
+        {
+            if (_gameProfilesForm == null || _gameProfilesForm.IsDisposed)
+                _gameProfilesForm = new GameProfilesForm();
+            _gameProfilesForm.Show();
+            _gameProfilesForm.BringToFront();
+        }
+
+        public void OpenDiagnostics()
+        {
+            if (_diagnosticsForm == null || _diagnosticsForm.IsDisposed)
+                _diagnosticsForm = new HardwareDiagnosticsForm();
+            _diagnosticsForm.Show();
+            _diagnosticsForm.BringToFront();
+        }
+
+        private void InitUltimateHub()
+        {
+            try
+            {
+                Panel panelUltimateHub = new Panel
+                {
+                    Dock = DockStyle.Top,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Padding = new Padding(20, 10, 20, 6),
+                    Margin = new Padding(0)
+                };
+
+                Panel pnlTitle = new Panel
+                {
+                    Dock = DockStyle.Top,
+                    Height = 28,
+                    Margin = new Padding(0)
+                };
+
+                Label lblHubTitle = new Label
+                {
+                    Text = "ULTIMATE CONTROL CENTER",
+                    Font = new Font("Segoe UI", 9.5f, FontStyle.Bold),
+                    ForeColor = Color.FromArgb(0, 210, 255),
+                    AutoSize = true,
+                    Location = new Point(0, 4)
+                };
+
+                pnlTitle.Controls.Add(lblHubTitle);
+
+                TableLayoutPanel tableHub = new TableLayoutPanel
+                {
+                    Dock = DockStyle.Top,
+                    Height = 44,
+                    ColumnCount = 4,
+                    RowCount = 1,
+                    Margin = new Padding(0, 4, 0, 4)
+                };
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+
+                RButton btnRGB = new RButton
+                {
+                    Text = "RGB Studio",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnRGB.Click += (_, _) => OpenRGBStudio();
+
+                RButton btnPerf = new RButton
+                {
+                    Text = "Telemetry",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnPerf.Click += (_, _) => OpenPerformanceDashboard();
+
+                RButton btnGames = new RButton
+                {
+                    Text = "Game Profiles",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnGames.Click += (_, _) => OpenGameProfiles();
+
+                RButton btnDiag = new RButton
+                {
+                    Text = "Diagnostics",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnDiag.Click += (_, _) => OpenDiagnostics();
+
+                tableHub.Controls.Add(btnRGB, 0, 0);
+                tableHub.Controls.Add(btnPerf, 1, 0);
+                tableHub.Controls.Add(btnGames, 2, 0);
+                tableHub.Controls.Add(btnDiag, 3, 0);
+
+                panelUltimateHub.Controls.Add(tableHub);
+                panelUltimateHub.Controls.Add(pnlTitle);
+
+                Controls.Add(panelUltimateHub);
+                Controls.SetChildIndex(panelUltimateHub, Controls.IndexOf(panelStartup));
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteLine($"[UltimateHub] Init error: {ex.Message}");
+            }
         }
 
         private void ButtonArmoury_Click(object? sender, EventArgs e)
@@ -928,7 +1079,45 @@ namespace GHelper
             menuOverlayGameOnly.Margin = padding;
             menuOverlayGameOnly.Checked = AppConfig.IsOverlayGameOnly();
             menuOverlayGameOnly.Enabled = AppConfig.IsOverlay();
-            contextMenuStrip.Items.Add(menuOverlayGameOnly);
+            contextMenuStrip.Items.Add("-");
+
+            var titleUltimate = new ToolStripMenuItem("G-Helper Ultimate");
+            titleUltimate.Margin = padding;
+            titleUltimate.Enabled = false;
+            contextMenuStrip.Items.Add(titleUltimate);
+
+            var menuRgb = new ToolStripMenuItem("RGB Studio Pro...");
+            menuRgb.Click += (s, e) => OpenRGBStudio();
+            menuRgb.Margin = padding;
+            contextMenuStrip.Items.Add(menuRgb);
+
+            var menuPerf = new ToolStripMenuItem("Performance & Benchmarks...");
+            menuPerf.Click += (s, e) => OpenPerformanceDashboard();
+            menuPerf.Margin = padding;
+            contextMenuStrip.Items.Add(menuPerf);
+
+            var menuGames = new ToolStripMenuItem("Smart Game Profiles...");
+            menuGames.Click += (s, e) => OpenGameProfiles();
+            menuGames.Margin = padding;
+            contextMenuStrip.Items.Add(menuGames);
+
+            var menuDiag = new ToolStripMenuItem("Hardware Diagnostics...");
+            menuDiag.Click += (s, e) => OpenDiagnostics();
+            menuDiag.Margin = padding;
+            contextMenuStrip.Items.Add(menuDiag);
+
+            var menuBoost = new ToolStripMenuItem("Boost Games (Clean Temp & Free RAM)");
+            menuBoost.Click += (s, e) =>
+            {
+                GameBooster.RunBoost(killTasks: true, clearTemp: true, trimRam: true, summary =>
+                {
+                    Program.toast.RunToast(summary, ToastIcon.Charger);
+                });
+            };
+            menuBoost.Margin = padding;
+            contextMenuStrip.Items.Add(menuBoost);
+
+            contextMenuStrip.Items.Add("-");
 
             var quit = new ToolStripMenuItem(Properties.Strings.Quit);
             quit.Click += ButtonQuit_Click;

@@ -484,6 +484,33 @@ namespace GHelper
             };
             panelSettings.Controls.Add(buttonCleanBoost);
 
+            RButton buttonOpenRgbStudio = new RButton();
+            buttonOpenRgbStudio.Text = "Open RGB Studio Pro (37 Effects & Kreo Sync)";
+            buttonOpenRgbStudio.Dock = DockStyle.Top;
+            buttonOpenRgbStudio.Height = 38;
+            buttonOpenRgbStudio.Margin = new Padding(3, 4, 3, 4);
+            buttonOpenRgbStudio.Secondary = true;
+            buttonOpenRgbStudio.Click += (s, e) => Program.settingsForm.OpenRGBStudio();
+            panelSettings.Controls.Add(buttonOpenRgbStudio);
+
+            RButton buttonOpenGameProfiles = new RButton();
+            buttonOpenGameProfiles.Text = "Open Smart Game Profiles & Library";
+            buttonOpenGameProfiles.Dock = DockStyle.Top;
+            buttonOpenGameProfiles.Height = 38;
+            buttonOpenGameProfiles.Margin = new Padding(3, 4, 3, 4);
+            buttonOpenGameProfiles.Secondary = true;
+            buttonOpenGameProfiles.Click += (s, e) => Program.settingsForm.OpenGameProfiles();
+            panelSettings.Controls.Add(buttonOpenGameProfiles);
+
+            RButton buttonOpenDiag = new RButton();
+            buttonOpenDiag.Text = "Open Hardware Diagnostics & System Audit";
+            buttonOpenDiag.Dock = DockStyle.Top;
+            buttonOpenDiag.Height = 38;
+            buttonOpenDiag.Margin = new Padding(3, 4, 3, 4);
+            buttonOpenDiag.Secondary = true;
+            buttonOpenDiag.Click += (s, e) => Program.settingsForm.OpenDiagnostics();
+            panelSettings.Controls.Add(buttonOpenDiag);
+
             sliderBrightness.Value = InputDispatcher.GetBacklight();
             sliderBrightness.AccessibleName = Properties.Strings.LaptopBacklight + ": " + sliderBrightness.Value;
             sliderBrightness.ValueChanged += SliderBrightness_ValueChanged;

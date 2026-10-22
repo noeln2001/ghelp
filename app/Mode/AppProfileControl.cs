@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using GHelper.Games;
 using GHelper.Helpers;
 
 namespace GHelper.Mode
@@ -59,17 +60,25 @@ namespace GHelper.Mode
                     _currentGame = procName;
                     _inGameMode = true;
 
-                    int targetMode = AppConfig.Get("game_profile_mode", AsusACPI.PerformanceTurbo);
-                    if (targetMode != _previousMode)
+                    // 1. Check if configured in SmartGameProfileManager
+                    if (SmartGameProfileManager.CheckAndApply(procName))
                     {
-                        Logger.WriteLine($"[AutoGame] Game detected '{procName}', switching to {Modes.GetName(targetMode)}");
-                        Program.modeControl.SetPerformanceMode(targetMode, false);
-                        Program.toast.RunToast($"Game Mode: {proc.ProcessName}", ToastIcon.Charger);
+                        Logger.WriteLine($"[AutoGame] Smart Game Profile applied for '{procName}'");
                     }
-
-                    if (AppConfig.Is("auto_game_boost"))
+                    else
                     {
-                        GameBooster.RunBoost(killTasks: true, clearTemp: true, trimRam: true);
+                        int targetMode = AppConfig.Get("game_profile_mode", AsusACPI.PerformanceTurbo);
+                        if (targetMode != _previousMode)
+                        {
+                            Logger.WriteLine($"[AutoGame] Game detected '{procName}', switching to {Modes.GetName(targetMode)}");
+                            Program.modeControl.SetPerformanceMode(targetMode, false);
+                            Program.toast.RunToast($"Game Mode: {proc.ProcessName}", ToastIcon.Charger);
+                        }
+
+                        if (AppConfig.Is("auto_game_boost"))
+                        {
+                            GameBooster.RunBoost(killTasks: true, clearTemp: true, trimRam: true);
+                        }
                     }
                 }
                 else if (!isGame && _inGameMode)
@@ -88,6 +97,8 @@ namespace GHelper.Mode
             if (!_inGameMode) return;
             _inGameMode = false;
 
+            SmartGameProfileManager.RestoreIfExited("");
+
             if (_previousMode != -1 && Modes.Exists(_previousMode) && _previousMode != Modes.GetCurrent())
             {
                 Logger.WriteLine($"[AutoGame] Game exited '{_currentGame}', restoring {Modes.GetName(_previousMode)}");
@@ -99,6 +110,7 @@ namespace GHelper.Mode
 
         private static bool IsGameProcess(string name)
         {
+            if (SmartGameProfileManager.Profiles.ContainsKey(name)) return true;
             if (DefaultGameProcesses.Contains(name)) return true;
 
             string custom = AppConfig.GetString("custom_game_processes", "");
