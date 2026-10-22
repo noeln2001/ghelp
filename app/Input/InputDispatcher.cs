@@ -752,6 +752,12 @@ namespace GHelper.Input
                 case "audio_studio":
                     Program.settingsForm.BeginInvoke(Program.settingsForm.OpenAudioStudio);
                     break;
+                case "gaming_optimizer":
+                    Program.settingsForm.BeginInvoke(Program.settingsForm.OpenUltimateGamingControl);
+                    break;
+                case "rapid_fire":
+                    MacroStudio.ToggleRapidFire();
+                    break;
                 default:
                     break;
             }

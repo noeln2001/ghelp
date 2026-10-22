@@ -37,6 +37,7 @@ namespace GHelper
         private HardwareDiagnosticsForm? _diagnosticsForm;
         private MonitorControlForm? _monitorControlForm;
         private AudioStudioForm? _audioStudioForm;
+        private UltimateGamingControlForm? _ultimateGamingForm;
 
         public GPUModeControl gpuControl;
         public AllyControl allyControl;
@@ -320,6 +321,7 @@ namespace GHelper
             panelPerformance.Focus();
             InitVisual();
             InitUltimateHub();
+            GamingLatencyOptimizer.InitializeFromSettings();
         }
 
         public void OpenRGBStudio()
@@ -370,6 +372,14 @@ namespace GHelper
             _audioStudioForm.BringToFront();
         }
 
+        public void OpenUltimateGamingControl()
+        {
+            if (_ultimateGamingForm == null || _ultimateGamingForm.IsDisposed)
+                _ultimateGamingForm = new UltimateGamingControlForm();
+            _ultimateGamingForm.Show();
+            _ultimateGamingForm.BringToFront();
+        }
+
         private void InitUltimateHub()
         {
             try
@@ -404,17 +414,17 @@ namespace GHelper
                 TableLayoutPanel tableHub = new TableLayoutPanel
                 {
                     Dock = DockStyle.Top,
-                    Height = 44,
-                    ColumnCount = 6,
-                    RowCount = 1,
+                    Height = 76,
+                    ColumnCount = 4,
+                    RowCount = 2,
                     Margin = new Padding(0, 4, 0, 4)
                 };
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.66F));
-                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 16.70F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 25F));
+                tableHub.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
+                tableHub.RowStyles.Add(new RowStyle(SizeType.Percent, 50F));
 
                 RButton btnRGB = new RButton
                 {
@@ -452,6 +462,18 @@ namespace GHelper
                 };
                 btnAudio.Click += (_, _) => OpenAudioStudio();
 
+                RButton btnGaming = new RButton
+                {
+                    Text = "Optimizer",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnGaming.Click += (_, _) => OpenUltimateGamingControl();
+
                 RButton btnPerf = new RButton
                 {
                     Text = "Telemetry",
@@ -488,12 +510,32 @@ namespace GHelper
                 };
                 btnDiag.Click += (_, _) => OpenDiagnostics();
 
+                RButton btnBoost = new RButton
+                {
+                    Text = "RAM Boost",
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(2),
+                    BorderRadius = 4,
+                    BackColor = SystemColors.ControlLight,
+                    ForeColor = this.ForeColor,
+                    Font = new Font("Segoe UI", 8.5f, FontStyle.Regular)
+                };
+                btnBoost.Click += (_, _) =>
+                {
+                    GameBooster.RunBoost(killTasks: true, clearTemp: true, trimRam: true, summary =>
+                    {
+                        Program.toast?.RunToast(summary, ToastIcon.Charger);
+                    });
+                };
+
                 tableHub.Controls.Add(btnRGB, 0, 0);
                 tableHub.Controls.Add(btnMonitors, 1, 0);
                 tableHub.Controls.Add(btnAudio, 2, 0);
-                tableHub.Controls.Add(btnPerf, 3, 0);
-                tableHub.Controls.Add(btnGames, 4, 0);
-                tableHub.Controls.Add(btnDiag, 5, 0);
+                tableHub.Controls.Add(btnGaming, 3, 0);
+                tableHub.Controls.Add(btnPerf, 0, 1);
+                tableHub.Controls.Add(btnGames, 1, 1);
+                tableHub.Controls.Add(btnDiag, 2, 1);
+                tableHub.Controls.Add(btnBoost, 3, 1);
 
                 panelUltimateHub.Controls.Add(tableHub);
                 panelUltimateHub.Controls.Add(pnlTitle);
@@ -1149,6 +1191,11 @@ namespace GHelper
             menuAudio.Click += (s, e) => OpenAudioStudio();
             menuAudio.Margin = padding;
             contextMenuStrip.Items.Add(menuAudio);
+
+            var menuGaming = new ToolStripMenuItem("Gaming & Latency Optimizer (Intel P-Core/Network/Timer)...");
+            menuGaming.Click += (s, e) => OpenUltimateGamingControl();
+            menuGaming.Margin = padding;
+            contextMenuStrip.Items.Add(menuGaming);
 
             var menuPerf = new ToolStripMenuItem("Performance & Benchmarks...");
             menuPerf.Click += (s, e) => OpenPerformanceDashboard();

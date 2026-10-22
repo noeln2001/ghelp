@@ -158,7 +158,16 @@ namespace GHelper.RGBStudio
                 _labelStatus.Text = "Lighting turned off";
             };
 
-            panelBottom.Controls.AddRange([_labelStatus, _btnApply, _btnTurnOff]);
+            var btnReactive = new RButton
+            {
+                Text = "⚡ Reactive & Ambilight",
+                Size = new Size(180, 36),
+                Location = new Point(15, 9),
+                Secondary = true
+            };
+            btnReactive.Click += (_, _) => Program.settingsForm.OpenUltimateGamingControl();
+
+            panelBottom.Controls.AddRange([_labelStatus, btnReactive, _btnApply, _btnTurnOff]);
             Controls.Add(panelBottom);
 
             // Build Right Panel Controls

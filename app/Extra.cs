@@ -60,6 +60,8 @@ namespace GHelper
               {"monitor_bright_up", "External Monitor: Brightness +10%"},
               {"monitor_bright_down", "External Monitor: Brightness -10%"},
               {"audio_studio", "Open Audio Codecs & Spatial Sound"},
+              {"gaming_optimizer", "Open Gaming & Latency Optimizer"},
+              {"rapid_fire", "Toggle Rapid-Fire Clicker"},
               {"custom", Properties.Strings.Custom}
             };
 
@@ -532,6 +534,15 @@ namespace GHelper
             buttonOpenAudio.Secondary = true;
             buttonOpenAudio.Click += (s, e) => Program.settingsForm.OpenAudioStudio();
             panelSettings.Controls.Add(buttonOpenAudio);
+
+            RButton buttonOpenGaming = new RButton();
+            buttonOpenGaming.Text = "Open Gaming Performance & Latency Optimizer (Intel/Network/Timer)";
+            buttonOpenGaming.Dock = DockStyle.Top;
+            buttonOpenGaming.Height = 38;
+            buttonOpenGaming.Margin = new Padding(3, 4, 3, 4);
+            buttonOpenGaming.Secondary = true;
+            buttonOpenGaming.Click += (s, e) => Program.settingsForm.OpenUltimateGamingControl();
+            panelSettings.Controls.Add(buttonOpenGaming);
 
             sliderBrightness.Value = InputDispatcher.GetBacklight();
             sliderBrightness.AccessibleName = Properties.Strings.LaptopBacklight + ": " + sliderBrightness.Value;
